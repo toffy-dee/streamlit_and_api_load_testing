@@ -1,2 +1,2 @@
 # streamlit_and_api_load_testing
-Streamlit-API-Load-Testing
+Locust-Selenium for load testing a webapp and API simultanously
