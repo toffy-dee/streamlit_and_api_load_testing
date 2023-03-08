@@ -1,19 +1,16 @@
 import os, json
 from time import perf_counter, sleep
 from dotenv import load_dotenv
+import urllib.parse
 
 from bs4 import BeautifulSoup
 
-from locust import HttpUser, task, between, events, constant
+from locust import HttpUser, task, between, constant, events
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support.select import Select
-from selenium.webdriver.chrome.options import Options
 
 
 load_dotenv()
@@ -344,7 +341,7 @@ class BrowserInteractor(HttpUser):
 
 class APITester(HttpUser):
     
-    fixed_count = 4
+    fixed_count = 1
 
     wait_time = between(1,5)
 
@@ -354,14 +351,36 @@ class APITester(HttpUser):
     def get_endpoint_url(self, tablename):
         return f'{self.environment.host}/api/v1/{tablename}?limit=5'.replace('//api', '/api')
     
-    def call_endpoint(self, base_url, table_name, query, api_key, test_name):
+    def call_endpoint(self, base_url, table_name, query_params, api_key, test_name):
 
-        endpoint = f'{base_url}/api/v1/{table_name}?{query}'.replace('//api', '/api')
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Accept-Profile": "demo"
-        }
-        self.client.get(endpoint, headers=headers, name=test_name)
+        print('in call_endpoint')
+
+        try:
+            query = urllib.parse.urlencode(query_params)
+            endpoint = f'{base_url}/api/v1/{table_name}?{query}'.replace('//api', '/api')
+            print('endpoint: ', endpoint)
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Accept-Profile": "demo"
+            }
+            self.client.get(endpoint, headers=headers, name=test_name)
+
+        except Exception as e:
+
+            print(e)
+
+            raise
+
+            exception_type = type(e)
+            
+            # Report the request duration to Locust
+            events.request.fire(
+                request_type="GET", 
+                name=test_name, 
+                response_time=0, 
+                response_length=0,
+                exception=exception_type
+            )        
 
     
     @task
@@ -373,9 +392,11 @@ class APITester(HttpUser):
 
         table_name = 'boalf'
 
-        query = 'limit=5'
+        query_params = {
+            "limit": "5",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API dev_boalf_5')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API dev_boalf_5')
 
 
     @task
@@ -387,9 +408,13 @@ class APITester(HttpUser):
 
         table_name = 'boalf'
 
-        query = 'and=(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)&order=available_at.desc&limit=50000'
+        query_params = {
+            "and": "(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)",
+            "order": "available_at.desc",
+            "limit": "50000",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API dev_boalf_50000')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API dev_boalf_50000')
 
     
     @task
@@ -401,9 +426,11 @@ class APITester(HttpUser):
 
         table_name = 'boalf'
 
-        query = 'limit=5'
+        query_params = {
+            "limit": "5",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API prod_boalf_5')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API prod_boalf_5')
 
 
     @task
@@ -415,9 +442,13 @@ class APITester(HttpUser):
 
         table_name = 'boalf'
 
-        query = 'and=(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)&order=available_at.desc&limit=50000'
+        query_params = {
+            "and": "(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)",
+            "order": "available_at.desc",
+            "limit": "50000",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API prod_boalf_50000')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API prod_boalf_50000')
 
 
     @task
@@ -429,9 +460,11 @@ class APITester(HttpUser):
 
         table_name = 'b1770'
 
-        query = 'limit=5'
+        query_params = {
+            "limit": "5",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API dev_b1770_5')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API dev_b1770_5')
 
 
     @task
@@ -443,9 +476,13 @@ class APITester(HttpUser):
 
         table_name = 'b1770'
 
-        query = 'and=(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)&order=available_at.desc&limit=50000'
+        query_params = {
+            "and": "(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)",
+            "order": "available_at.desc",
+            "limit": "50000",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API dev_b1770_50000')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API dev_b1770_50000')
 
     
     @task
@@ -457,9 +494,11 @@ class APITester(HttpUser):
 
         table_name = 'b1770'
 
-        query = 'limit=5'
+        query_params = {
+            "limit": "5",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API prod_b1770_5')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API prod_b1770_5')
 
 
     @task
@@ -471,9 +510,13 @@ class APITester(HttpUser):
 
         table_name = 'b1770'
 
-        query = 'and=(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)&order=available_at.desc&limit=50000'
+        query_params = {
+            "and": "(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)",
+            "order": "available_at.desc",
+            "limit": "50000",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API prod_b1770_50000')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API prod_b1770_50000')
 
 
     @task
@@ -485,9 +528,11 @@ class APITester(HttpUser):
 
         table_name = 'pn'
 
-        query = 'limit=5'
+        query_params = {
+            "limit": "5",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API dev_pn_5')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API dev_pn_5')
 
 
     @task
@@ -499,9 +544,13 @@ class APITester(HttpUser):
 
         table_name = 'pn'
 
-        query = 'and=(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)&order=available_at.desc&limit=50000'
+        query_params = {
+            "and": "(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)",
+            "order": "available_at.desc",
+            "limit": "50000",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API dev_pn_50000')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API dev_pn_50000')
 
     
     @task
@@ -513,9 +562,11 @@ class APITester(HttpUser):
 
         table_name = 'pn'
 
-        query = 'limit=5'
+        query_params = {
+            "limit": "5",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API prod_pn_5')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API prod_pn_5')
 
 
     @task
@@ -527,6 +578,10 @@ class APITester(HttpUser):
 
         table_name = 'pn'
 
-        query = 'and=(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)&order=available_at.desc&limit=50000'
+        query_params = {
+            "and": "(settlement_start.gte.2023-03-01T09:00:00+00:00,settlement_start.lte.2023-03-03T09:00:00+00:00)",
+            "order": "available_at.desc",
+            "limit": "50000",
+        }
 
-        self.call_endpoint(base_url, table_name, query, api_key, 'API prod_pn_50000')
+        self.call_endpoint(base_url, table_name, query_params, api_key, 'API prod_pn_50000')
