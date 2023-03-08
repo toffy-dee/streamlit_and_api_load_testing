@@ -1,0 +1,27 @@
+[
+    {
+        "domain": "dataspark.app",
+        "hostOnly": true,
+        "httpOnly": false,
+        "name": "_xsrf",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": true,
+        "storeId": null,
+        "value": "2|b617c073|e27aac57e1ef7fe342beababd122bf8d|1678293132"
+    },
+    {
+        "domain": "dataspark.app",
+        "expirationDate": 1678816209,
+        "hostOnly": true,
+        "httpOnly": false,
+        "name": "tesla_data_web_login",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoibGVkcmVsdCIsImV4cCI6MTY3ODgxNjIwOS4xNTg4MTR9.ImbF81ne5y6T1dnXcjZKVuGtfukJU5GqsMt1Kev-6Ak"
+    }
+]
