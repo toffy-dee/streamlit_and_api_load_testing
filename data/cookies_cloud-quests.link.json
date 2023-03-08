@@ -1,0 +1,27 @@
+[
+    {
+        "domain": "cloud-quests.link",
+        "hostOnly": true,
+        "httpOnly": false,
+        "name": "_xsrf",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": true,
+        "storeId": null,
+        "value": "2|17d00025|57d2b4979d832665e7f3a662ccf0067b|1678233945"
+    },
+    {
+        "domain": "cloud-quests.link",
+        "expirationDate": 1678838761,
+        "hostOnly": true,
+        "httpOnly": false,
+        "name": "tesla_data_web_login",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoibGVkcmVsdCIsImV4cCI6MTY3ODgzODc2MS42NTczNDh9.MqrW_51Y1ji4x7rZgbFOwjY8mokYNWtgBMNUU-Jmcr0"
+    }
+]
